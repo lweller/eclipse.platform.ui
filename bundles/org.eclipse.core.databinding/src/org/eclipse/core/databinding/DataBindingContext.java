@@ -35,10 +35,10 @@ import org.eclipse.core.runtime.IStatus;
  * <p>
  * A DataBindingContext provides the following abilities:
  * <ul>
- * <li>Ability to create bindings between
- * {@link IObservableValue observable values}.</li>
- * <li>Ability to create bindings between
- * {@link IObservableList observable lists}.</li>
+ * <li>Ability to create bindings between {@link IObservableValue observable
+ * values}.</li>
+ * <li>Ability to create bindings between {@link IObservableList observable
+ * lists}.</li>
  * <li>Access to the bindings created by the instance.</li>
  * <li>Access to the list of validation status providers (this includes all
  * bindings).</li>
@@ -47,8 +47,8 @@ import org.eclipse.core.runtime.IStatus;
  * <p>
  * Multiple contexts can be used at any point in time. One strategy for the
  * management of contexts is the aggregation of validation statuses. For example
- * an <code>IWizardPage</code> could use a single context and the statuses
- * could be aggregated to set the page status and fulfillment. Each page in the
+ * an <code>IWizardPage</code> could use a single context and the statuses could
+ * be aggregated to set the page status and fulfillment. Each page in the
  * <code>IWizard</code> would have its own context instance.
  * </p>
  * 
@@ -156,11 +156,15 @@ public class DataBindingContext {
 			IObservableValue modelObservableValue,
 			UpdateValueStrategy targetToModel, UpdateValueStrategy modelToTarget) {
 		UpdateValueStrategy targetToModelStrategy = targetToModel != null ? targetToModel
-						: createTargetToModelUpdateValueStrategy(targetObservableValue, modelObservableValue);
+				: createTargetToModelUpdateValueStrategy(targetObservableValue,
+						modelObservableValue);
 		UpdateValueStrategy modelToTargetStrategy = modelToTarget != null ? modelToTarget
-				: createModelToTargetUpdateValueStrategy(modelObservableValue, targetObservableValue);
-		targetToModelStrategy.fillDefaults(targetObservableValue, modelObservableValue);
-		modelToTargetStrategy.fillDefaults(modelObservableValue, targetObservableValue);
+				: createModelToTargetUpdateValueStrategy(modelObservableValue,
+						targetObservableValue);
+		targetToModelStrategy.fillDefaults(targetObservableValue,
+				modelObservableValue);
+		modelToTargetStrategy.fillDefaults(modelObservableValue,
+				targetObservableValue);
 		ValueBinding result = new ValueBinding(targetObservableValue,
 				modelObservableValue, targetToModelStrategy,
 				modelToTargetStrategy);
@@ -193,7 +197,7 @@ public class DataBindingContext {
 			IObservableValue fromValue, IObservableValue toValue) {
 		return new UpdateValueStrategy();
 	}
-	
+
 	/**
 	 * Creates a {@link Binding} to synchronize the values of two
 	 * {@link IObservableList observable lists}. This method is an alias for
@@ -269,7 +273,7 @@ public class DataBindingContext {
 	/**
 	 * @param targetObservableList
 	 * @param modelObservableList
-	 * @return an update list strategy 
+	 * @return an update list strategy
 	 */
 	protected UpdateListStrategy createTargetToModelUpdateListStrategy(
 			IObservableList targetObservableList,
@@ -297,10 +301,9 @@ public class DataBindingContext {
 
 	/**
 	 * Creates a {@link Binding} to synchronize the values of two
-	 * {@link IObservableSet observable sets}. During synchronization
-	 * validation and conversion can be employed to customize the process. For
-	 * specifics on the customization of the process see
-	 * {@link UpdateSetStrategy}.
+	 * {@link IObservableSet observable sets}. During synchronization validation
+	 * and conversion can be employed to customize the process. For specifics on
+	 * the customization of the process see {@link UpdateSetStrategy}.
 	 * 
 	 * @param targetObservableSet
 	 *            target set, commonly a set representing a set in the UI
@@ -333,8 +336,8 @@ public class DataBindingContext {
 	}
 
 	/**
-	 * @param targetObservableSet 
-	 * @param modelObservableSet 
+	 * @param targetObservableSet
+	 * @param modelObservableSet
 	 * @return a default set update strategy
 	 * @since 1.1
 	 */
@@ -345,9 +348,9 @@ public class DataBindingContext {
 	}
 
 	/**
-	 * @param modelObservableSet 
-	 * @param targetObservableSet 
-	 * @return a default set update strategy 
+	 * @param modelObservableSet
+	 * @param targetObservableSet
+	 * @return a default set update strategy
 	 * @since 1.1
 	 */
 	protected UpdateSetStrategy createModelToTargetUpdateSetStrategy(
@@ -357,12 +360,91 @@ public class DataBindingContext {
 	}
 
 	/**
+	 * Creates a {@link Binding} to synchronize the values of two
+	 * {@link IObservableMap observable maps}. This method is an alias for
+	 * <code>bindMap(targetObservableMap, modelObservableMap, null,
+	 * null)</code>.
+	 * 
+	 * @param targetObservableMap
+	 *            target map, commonly a map representing a map in the UI
+	 * @param modelObservableMap
+	 *            model map
+	 * @return created binding
+	 * @since 1.2
+	 */
+	public final Binding bindMap(IObservableMap targetObservableMap,
+			IObservableMap modelObservableMap) {
+		return bindMap(targetObservableMap, modelObservableMap, null, null);
+	}
+
+	/**
+	 * Creates a {@link Binding} to synchronize the values of two
+	 * {@link IObservableMap observable maps}. During synchronization validation
+	 * and conversion can be employed to customize the process. For specifics on
+	 * the customization of the process see {@link UpdateMapStrategy}.
+	 * 
+	 * @param targetObservableMap
+	 *            target map, commonly a map representing a map in the UI
+	 * @param modelObservableMap
+	 *            model map
+	 * @param targetToModel
+	 *            strategy to employ when the target is the source of the change
+	 *            and the model is the destination
+	 * @param modelToTarget
+	 *            strategy to employ when the model is the source of the change
+	 *            and the target is the destination
+	 * @return created binding
+	 * @since 1.1
+	 */
+	public final Binding bindMap(IObservableMap targetObservableMap,
+			IObservableMap modelObservableMap, UpdateMapStrategy targetToModel,
+			UpdateMapStrategy modelToTarget) {
+		if (targetToModel == null)
+			targetToModel = createTargetToModelUpdateMapStrategy(
+					targetObservableMap, modelObservableMap);
+		if (modelToTarget == null)
+			modelToTarget = createModelToTargetUpdateMapStrategy(
+					modelObservableMap, targetObservableMap);
+		targetToModel.fillDefaults(targetObservableMap, modelObservableMap);
+		modelToTarget.fillDefaults(modelObservableMap, targetObservableMap);
+		MapBinding result = new MapBinding(targetObservableMap,
+				modelObservableMap, targetToModel, modelToTarget);
+		result.init(this);
+		return result;
+	}
+
+	/**
+	 * @param targetObservableMap
+	 * @param modelObservableMap
+	 * @return a default map update strategy
+	 * @since 1.1
+	 */
+	protected UpdateMapStrategy createTargetToModelUpdateMapStrategy(
+			IObservableMap targetObservableMap,
+			IObservableMap modelObservableMap) {
+		return new UpdateMapStrategy();
+	}
+
+	/**
+	 * @param modelObservableMap
+	 * @param targetObservableMap
+	 * @return a default map update strategy
+	 * @since 1.1
+	 */
+	protected UpdateMapStrategy createModelToTargetUpdateMapStrategy(
+			IObservableMap modelObservableMap,
+			IObservableMap targetObservableMap) {
+		return new UpdateMapStrategy();
+	}
+
+	/**
 	 * Disposes of this data binding context and all bindings and validation
 	 * status providers that were added to this context. This method must be
 	 * called in the {@link #getValidationRealm() validation realm}.
 	 */
 	public final void dispose() {
-		Binding[] bindingArray = (Binding[]) bindings.toArray(new Binding[bindings.size()]);
+		Binding[] bindingArray = (Binding[]) bindings
+				.toArray(new Binding[bindings.size()]);
 		for (int i = 0; i < bindingArray.length; i++) {
 			bindingArray[i].dispose();
 		}
@@ -402,9 +484,9 @@ public class DataBindingContext {
 
 	/**
 	 * Returns an {@link IObservableMap} &lt; {@link Binding}, {@link IStatus}
-	 * &gt; mapping from bindings to current validation statuses. The keys of the
-	 * map are the bindings returned by {@link #getBindings()}, and the values
-	 * are the current IStatus objects for each binding.
+	 * &gt; mapping from bindings to current validation statuses. The keys of
+	 * the map are the bindings returned by {@link #getBindings()}, and the
+	 * values are the current IStatus objects for each binding.
 	 * 
 	 * @return the observable map from bindings to status objects.
 	 * 
@@ -472,7 +554,8 @@ public class DataBindingContext {
 	 *         <code>false</code> if not
 	 */
 	public boolean removeBinding(Binding binding) {
-		return bindings.remove(binding) && removeValidationStatusProvider(binding);
+		return bindings.remove(binding)
+				&& removeValidationStatusProvider(binding);
 	}
 
 	/**
