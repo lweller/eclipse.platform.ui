@@ -280,7 +280,7 @@ public class DataBindingContext {
 	/**
 	 * Creates a {@link Binding} to synchronize the values of two
 	 * {@link IObservableSet observable sets}. This method is an alias for
-	 * <code>bindSet(targetObservableValue, modelObservableValue, null,
+	 * <code>bindSet(targetObservableSet, modelObservableSet, null,
 	 * null)</code>.
 	 * 
 	 * @param targetObservableSet
