@@ -215,7 +215,7 @@ public class ListBinding extends Binding {
 							// TODO - at this point, the two lists will be out
 							// of sync if an error occurred...
 						} finally {
-							validationStatusObservable.setValue(multiStatus);
+							setValidationStatus(multiStatus);
 
 							if (destination == getTarget()) {
 								updatingTarget = false;
@@ -227,6 +227,14 @@ public class ListBinding extends Binding {
 				});
 			}
 		}
+	}
+
+	private void setValidationStatus(final IStatus status) {
+		validationStatusObservable.getRealm().exec(new Runnable() {
+			public void run() {
+				validationStatusObservable.setValue(status);
+			}
+		});
 	}
 
 	/**
